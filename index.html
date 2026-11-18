@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Геометрия — Үшбұрыштар теңдігінің белгілері</title>
+<style>
+:root{--ink:#1b2a49;--mut:#5b6679;--line:#c9d0dc;--bg:#f6f7f9;--card:#fff;--acc:#1f3a6e;--red:#8b1e2d}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.6 Georgia,"Times New Roman",serif}
+.wrap{max-width:760px;margin:0 auto;padding:28px 16px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:4px;padding:28px}
+h1{font-size:25px;line-height:1.3;margin:0 0 6px}
+.sub{color:var(--mut);margin:0 0 4px}
+hr{border:0;border-top:1px solid var(--line);margin:20px 0}
+label{display:block;font-weight:bold;margin:16px 0 6px}
+input[type=text],select{width:100%;padding:10px 12px;font:inherit;border:1px solid var(--line);border-radius:3px;background:#fff;color:var(--ink)}
+input:focus,select:focus,button:focus-visible{outline:2px solid var(--acc);outline-offset:1px}
+.vars{display:flex;gap:12px}
+.vars label{flex:1;margin:0;font-weight:normal;border:1px solid var(--line);border-radius:3px;padding:10px 12px;cursor:pointer;display:flex;gap:8px;align-items:center}
+.vars input:checked+span{font-weight:bold}
+.vars label:has(input:checked){border-color:var(--acc);background:#eef2f9}
+.note{font-size:15px;color:var(--mut);border-left:3px solid var(--line);padding-left:12px;margin-top:20px}
+button{font:inherit;background:var(--acc);color:#fff;border:0;border-radius:3px;padding:11px 28px;cursor:pointer}
+button:disabled{background:#aab3c3;cursor:not-allowed}
+.hd{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;color:var(--mut)}
+.bar{height:4px;background:var(--line);margin-bottom:18px}.bar i{display:block;height:100%;background:var(--acc)}
+.tm{font-variant-numeric:tabular-nums;font-weight:bold;color:var(--ink)}.tm.low{color:var(--red)}
+.fig{border:1px solid var(--line);border-radius:3px;margin:14px 0;text-align:center;background:#fff}
+.fig svg{width:100%;max-width:440px;height:auto}
+.q{font-size:18px;margin:8px 0 14px}
+.opt{display:flex;gap:10px;align-items:flex-start;border:1px solid var(--line);border-radius:3px;padding:10px 12px;margin:8px 0;cursor:pointer}
+.opt:has(input:checked){border-color:var(--acc);background:#eef2f9}
+.opt input{margin-top:6px}
+.num{width:180px!important;font-size:20px;text-align:center}
+.ft{display:flex;justify-content:flex-end;margin-top:20px}
+.hid{display:none!important}
+.modal{position:fixed;inset:0;background:rgba(27,42,73,.6);display:flex;align-items:center;justify-content:center;padding:16px;z-index:9}
+.modal .card{max-width:460px;border-top:4px solid var(--red)}
+.big{font-size:54px;margin:8px 0}
+.err{color:var(--red)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<section id="start" class="card">
+  <h1>Тест: Үшбұрыштар теңдігінің белгілерін дәлелдеуге берілген есептер</h1>
+  <p class="sub">Пән: Геометрия</p>
+  <p class="sub">Математика мұғалімі – Кунгозин Даулет Багдашұлы</p>
+  <p class="sub">Оқу мақсаты: 7.1.1.22 – есептерді есептеуге және дәлелдеуге шығаруда үшбұрыштар теңдігінің белгілерін қолдану</p>
+  <hr>
+  <label for="fio">Аты-жөніңіз (Т.А.Ә.)</label>
+  <input type="text" id="fio" autocomplete="off" placeholder="Введите ФИ">
+  <label for="cls">Сынып</label>
+  <select id="cls"><option value="">Таңдаңыз</option><option>7Ә</option></select>
+  <label>Нұсқа</label>
+  <div class="vars">
+    <label><input type="radio" name="v" value="1"><span>1-нұсқа</span></label>
+    <label><input type="radio" name="v" value="2"><span>2-нұсқа</span></label>
+  </div>
+  <div class="note">Тест 10 сұрақтан тұрады (5 – бір дұрыс жауапты таңдау, 5 – санды енгізу). Әр сұраққа 1,5 минут беріледі, әр дұрыс жауап – 1 балл. Тест кезінде басқа бетке немесе қосымшаға ауысуға болмайды: әр ауысу тіркеледі және бағаңыз 1 баллға төмендетіледі.</div>
+  <div class="ft"><button id="go" disabled>Әрі қарай</button></div>
+</section>
+
+<section id="quiz" class="card hid"></section>
+
+<section id="end" class="card hid" style="text-align:center">
+  <h1>Тест аяқталды</h1>
+  <p class="sub" id="who"></p>
+  <div class="big" id="sc"></div>
+  <p id="pen" class="sub"></p>
+  <p id="st" class="sub"></p>
+  <button id="retry" class="hid">Нәтижені қайта жіберу</button>
+</section>
+</div>
+
+<div id="warn" class="modal hid"><div class="card">
+  <h1>Ескерту</h1>
+  <p>Сіз тест бетінен шықтыңыз (<b id="wc"></b> рет). Бағаңыз <b>1 баллға төмендетіледі</b>. Тест тоқтатылмайды, жалғастыра беріңіз.</p>
+  <div class="ft"><button id="wok">Түсінікті</button></div>
+</div></div>
+
+<script>
+const SCRIPT_URL='https://script.google.com/macros/s/AKfycbwQphmaQR_zfxXP7feTezOcGSsLkds_SwUbodaUSCJUVcAcv2D97TNkoK7pjtcy6JcH-w/exec'; // Apps Script Web App URL
+const TIME=90, MAX=10;
+
+/* ---------- SVG figures ---------- */
+function draw(f){
+  const P=f.p,ks=Object.keys(P);
+  const cx=ks.reduce((s,k)=>s+P[k][0],0)/ks.length, cy=ks.reduce((s,k)=>s+P[k][1],0)/ks.length;
+  let h='<svg viewBox="0 0 320 172" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Сурет">';
+  f.s.forEach(e=>{const a=P[e[0]],b=P[e[1]];h+=`<line x1="${a[0]}" y1="${a[1]}" x2="${b[0]}" y2="${b[1]}" stroke="#1b2a49" stroke-width="2" stroke-linecap="round"/>`});
+  (f.k||[]).forEach(([e,n])=>{const a=P[e[0]],b=P[e[1]],mx=(a[0]+b[0])/2,my=(a[1]+b[1])/2,l=Math.hypot(b[0]-a[0],b[1]-a[1]),dx=(b[0]-a[0])/l,dy=(b[1]-a[1])/l;
+    for(let i=0;i<n;i++){const t=(i-(n-1)/2)*5,x=mx+dx*t,y=my+dy*t;h+=`<line x1="${x-dy*5}" y1="${y+dx*5}" x2="${x+dy*5}" y2="${y-dx*5}" stroke="#8b1e2d" stroke-width="2"/>`}});
+  (f.g||[]).forEach(([e,n])=>{const v=P[e[1]],a=P[e[0]],b=P[e[2]];
+    const u=[a[0]-v[0],a[1]-v[1]],w=[b[0]-v[0],b[1]-v[1]],lu=Math.hypot(...u),lw=Math.hypot(...w),sw=(u[0]*w[1]-u[1]*w[0])>0?1:0;
+    for(let i=0;i<n;i++){const r=17+i*5;h+=`<path d="M${v[0]+u[0]/lu*r} ${v[1]+u[1]/lu*r} A${r} ${r} 0 0 ${sw} ${v[0]+w[0]/lw*r} ${v[1]+w[1]/lw*r}" fill="none" stroke="#8b1e2d" stroke-width="1.8"/>`}});
+  ks.forEach(k=>{const p=P[k];let ox,oy;
+    if(p.length>2){ox=p[2];oy=p[3]}else{const dx=p[0]-cx,dy=p[1]-cy,l=Math.hypot(dx,dy)||1;ox=dx/l*14;oy=dy/l*14}
+    h+=`<circle cx="${p[0]}" cy="${p[1]}" r="2.8" fill="#1b2a49"/><text x="${p[0]+ox}" y="${p[1]+oy}" text-anchor="middle" dominant-baseline="central" font-family="Georgia,serif" font-style="italic" font-size="15" fill="#1b2a49">${k}</text>`});
+  return h+'</svg>';
+}
+const two=(n,k,g)=>{const q=n.split('');return{p:{[q[0]]:[15,140],[q[1]]:[55,30],[q[2]]:[135,140],[q[3]]:[175,140],[q[4]]:[215,30],[q[5]]:[295,140]},s:[q[0]+q[1],q[1]+q[2],q[2]+q[0],q[3]+q[4],q[4]+q[5],q[5]+q[3]],k,g}};
+const cro=(k,g)=>({p:{A:[40,30],B:[240,140],C:[40,140],D:[240,30],O:[140,85,0,-11]},s:['AB','CD','AC','BD'],k,g});
+const iso=(k,g)=>({p:{A:[30,140],C:[250,140],B:[140,25],D:[140,140,0,14]},s:['AB','BC','AC','BD'],k,g});
+const kit=(k,g)=>({p:{A:[30,85],B:[130,22],D:[130,148],C:[250,85]},s:['AB','BC','CD','DA','AC'],k,g});
+const par=(d,k,g)=>({p:{A:[30,140],B:[70,30],C:[250,30],D:[210,140]},s:['AB','BC','CD','DA',d],k,g});
+
+/* ---------- Questions ---------- */
+const Q={
+1:[
+{t:'Суретте ABC және DEF үшбұрыштарында AB = DE, AC = DF, ∠A = ∠D. Бұл үшбұрыштар теңдігінің қандай белгісі бойынша тең?',f:two('ABCDEF',[['AB',1],['DE',1],['AC',2],['DF',2]],[['BAC',1],['EDF',1]]),o:['Екі қабырғасы және олардың арасындағы бұрышы бойынша','Қабырғасы және оған іргелес екі бұрышы бойынша','Үш қабырғасы бойынша','Үшбұрыштар тең емес'],a:0},
+{t:'AB және CD кесінділері O нүктесінде қиылысады, AO = OB, CO = OD. AOC және BOD үшбұрыштарының теңдігін дәлелдеуде қандай белгі қолданылады?',f:cro([['AO',1],['OB',1],['CO',2],['OD',2]],[['AOC',1],['BOD',1]]),o:['Қабырғасы және оған іргелес екі бұрышы бойынша','Екі қабырғасы және арасындағы бұрышы бойынша (∠AOC = ∠BOD – вертикаль бұрыштар)','Үш қабырғасы бойынша','Гипотенузасы және катеті бойынша'],a:1},
+{t:'ABC үшбұрышында AB = BC, BD – медиана. ABD және CBD үшбұрыштары қандай белгі бойынша тең?',f:iso([['AB',1],['BC',1],['AD',2],['DC',2]]),o:['Екі қабырғасы және арасындағы бұрышы бойынша','Қабырғасы және іргелес екі бұрышы бойынша','Үш қабырғасы бойынша (BD – ортақ қабырға)','Тең деп айтуға болмайды'],a:2},
+{t:'ABCD төртбұрышында AC диагоналі A және C бұрыштарын тең екіге бөледі: ∠BAC = ∠DAC, ∠BCA = ∠DCA. ABC және ADC үшбұрыштары қандай белгі бойынша тең?',f:kit([],[['BAC',1],['CAD',1],['BCA',2],['ACD',2]]),o:['Үш қабырғасы бойынша','Қабырғасы және оған іргелес екі бұрышы бойынша (AC – ортақ қабырға)','Екі қабырғасы және арасындағы бұрышы бойынша','Гипотенузасы және сүйір бұрышы бойынша'],a:1},
+{t:'ABCD параллелограмында AB = CD, BC = AD. ABC және CDA үшбұрыштары үш қабырғасы бойынша тең (AC – ортақ). Осыдан қай теңдік шығады?',f:par('AC',[['AB',1],['CD',1],['BC',2],['AD',2]]),o:['∠A = ∠B','∠BAC = ∠ABC','∠ACB = ∠BAC','∠B = ∠D'],a:3},
+{t:'ΔABC = ΔMNK. AB = 5 см, BC = 7 см, MK = 9 см. MNK үшбұрышының периметрін табыңыз (см).',f:two('ABCMNK',[],[]),n:21},
+{t:'AB және CD кесінділері O нүктесінде қиылысады, AO = OB, CO = OD. AO = 5 см, CO = 4 см, AC = 6 см. BOD үшбұрышының периметрін табыңыз (см).',f:cro([['AO',1],['OB',1],['CO',2],['OD',2]],[]),n:15},
+{t:'ABC тең бүйірлі үшбұрышында (AB = BC) BD – медиана, ∠CBD = 35°. ∠ABC бұрышын табыңыз (градус).',f:iso([['AB',1],['BC',1],['AD',2],['DC',2]],[['CBD',1]]),n:70},
+{t:'ABCD параллелограмында AB = CD, AD = BC. ∠ABD = 47° болса, ∠CDB бұрышын табыңыз (градус).',f:par('BD',[['AB',1],['CD',1],['BC',2],['AD',2]],[['ABD',1],['BDC',1]]),n:47},
+{t:'ABC тең бүйірлі үшбұрышында AB = BC = 8 см, AC = 10 см, BD – медиана, BD = 6 см. ABD үшбұрышының периметрін табыңыз (см).',f:iso([['AB',1],['BC',1],['AD',2],['DC',2]]),n:19}
+],
+2:[
+{t:'Суретте ABC және DEF үшбұрыштарында AB = DE, ∠A = ∠D, ∠B = ∠E. Бұл үшбұрыштар теңдігінің қандай белгісі бойынша тең?',f:two('ABCDEF',[['AB',1],['DE',1]],[['BAC',1],['EDF',1],['ABC',2],['DEF',2]]),o:['Үш қабырғасы бойынша','Қабырғасы және оған іргелес екі бұрышы бойынша','Екі қабырғасы және арасындағы бұрышы бойынша','Катеті және гипотенузасы бойынша'],a:1},
+{t:'AB және CD кесінділері O нүктесінде қиылысады, AO = OB, ∠OAC = ∠OBD. AOC және BOD үшбұрыштары қандай белгі бойынша тең?',f:cro([['AO',1],['OB',1]],[['OAC',1],['OBD',1]]),o:['Қабырғасы және іргелес екі бұрышы бойынша (∠AOC = ∠BOD – вертикаль бұрыштар)','Үш қабырғасы бойынша','Екі қабырғасы және арасындағы бұрышы бойынша','Тең болмайды'],a:0},
+{t:'ABCD төртбұрышында AB = AD, BC = DC. ABC және ADC үшбұрыштары қандай белгі бойынша тең?',f:kit([['AB',1],['AD',1],['BC',2],['DC',2]],[]),o:['Екі қабырғасы және арасындағы бұрышы бойынша','Қабырғасы және іргелес екі бұрышы бойынша','Гипотенузасы және катеті бойынша','Үш қабырғасы бойынша (AC – ортақ қабырға)'],a:3},
+{t:'ABC үшбұрышында AB = BC, BD – ∠B бұрышының биссектрисасы. ABD және CBD үшбұрыштары қандай белгі бойынша тең?',f:iso([['AB',1],['BC',1]],[['ABD',1],['DBC',1]]),o:['Үш қабырғасы бойынша','Қабырғасы және іргелес екі бұрышы бойынша','Екі қабырғасы және арасындағы бұрышы бойынша (BD – ортақ қабырға)','Тең деп айтуға болмайды'],a:2},
+{t:'ΔABC = ΔDEF, AB = DE, BC = EF, AC = DF. ∠C бұрышына тең бұрышты көрсетіңіз.',f:two('ABCDEF',[['AB',1],['DE',1],['BC',2],['EF',2],['AC',3],['DF',3]],[]),o:['∠F','∠D','∠E','∠A'],a:0},
+{t:'ΔABC = ΔKLM. ABC үшбұрышының периметрі 24 см, KL = 6 см, LM = 8 см. AC қабырғасының ұзындығын табыңыз (см).',f:two('ABCKLM',[],[]),n:10},
+{t:'AB және CD кесінділері O нүктесінде қиылысады, AO = OB, CO = OD. AO = 4 см, CO = 3 см, AC = 5 см. BOD үшбұрышының периметрін табыңыз (см).',f:cro([['AO',1],['OB',1],['CO',2],['OD',2]],[]),n:12},
+{t:'ABC тең бүйірлі үшбұрышында (AB = BC) BD – медиана, ∠ABC = 84°. ∠CBD бұрышын табыңыз (градус).',f:iso([['AB',1],['BC',1],['AD',2],['DC',2]]),n:42},
+{t:'ABCD параллелограмында AB = CD, AD = BC, BD – диагональ. ∠A = 105° болса, ∠C бұрышын табыңыз (градус).',f:par('BD',[['AB',1],['CD',1],['BC',2],['AD',2]],[['BAD',1],['BCD',1]]),n:105},
+{t:'ABC тең бүйірлі үшбұрышында AB = BC = 10 см, периметрі 32 см, BD – медиана, BD = 7 см. ABD үшбұрышының периметрін табыңыз (см).',f:iso([['AB',1],['BC',1],['AD',2],['DC',2]]),n:23}
+]};
+
+/* ---------- State ---------- */
+const $=id=>document.getElementById(id);
+let S=null,active=false,away=false,tick=null;
+const LET=['А','Ә','Б','В'];
+
+function chk(){$('go').disabled=!($('fio').value.trim().length>=3&&$('cls').value&&document.querySelector('input[name=v]:checked'))}
+['input','change'].forEach(e=>document.addEventListener(e,chk));
+
+$('go').onclick=()=>{
+  S={name:$('fio').value.trim().replace(/\s+/g,' '),cls:$('cls').value,v:+document.querySelector('input[name=v]:checked').value,i:0,ans:[],sw:0};
+  $('start').classList.add('hid');$('quiz').classList.remove('hid');active=true;show();
+};
+
+function show(){
+  const q=Q[S.v][S.i],last=S.i===MAX-1;
+  let h=`<div class="hd"><span>Сұрақ ${S.i+1} / ${MAX} · ${S.v}-нұсқа</span><span class="tm" id="tm"></span></div><div class="bar"><i style="width:${S.i*10}%"></i></div>
+  <div class="q">${q.t}</div><div class="fig">${draw(q.f)}</div>`;
+  if(q.o){h+=q.o.map((o,i)=>`<label class="opt"><input type="radio" name="a" value="${i}"><span><b>${LET[i]})</b> ${o}</span></label>`).join('')}
+  else h+=`<label for="na" style="margin-top:6px">Жауабыңызды санмен енгізіңіз:</label><input type="text" id="na" class="num" inputmode="decimal" autocomplete="off">`;
+  h+=`<div class="ft"><button id="nx">${last?'Тестті аяқтау':'Келесі'}</button></div>`;
+  $('quiz').innerHTML=h;window.scrollTo(0,0);
+  $('nx').onclick=next;
+  const dl=Date.now()+TIME*1000;clearInterval(tick);
+  const upd=()=>{const l=Math.max(0,Math.ceil((dl-Date.now())/1000));$('tm').textContent=`${Math.floor(l/60)}:${String(l%60).padStart(2,'0')}`;$('tm').classList.toggle('low',l<=15);if(l<=0)next()};
+  upd();tick=setInterval(upd,250);
+}
+function next(){
+  clearInterval(tick);const q=Q[S.v][S.i];let ok=false;
+  if(q.o){const r=document.querySelector('input[name=a]:checked');ok=!!r&&+r.value===q.a}
+  else{const x=parseFloat(($('na').value||'').replace(',','.').trim());ok=!isNaN(x)&&Math.abs(x-q.n)<1e-9}
+  S.ans.push(ok?1:0);S.i++;
+  S.i<MAX?show():finish();
+}
+
+/* ---------- Tab tracking ---------- */
+function leave(){if(!active||away)return;away=true;S.sw++}
+function back(){if(!away)return;away=false;if(!active)return;$('wc').textContent=S.sw;$('warn').classList.remove('hid')}
+document.addEventListener('visibilitychange',()=>document.hidden?leave():back());
+window.addEventListener('blur',leave);window.addEventListener('focus',back);
+$('wok').onclick=()=>$('warn').classList.add('hid');
+window.addEventListener('beforeunload',e=>{if(active){e.preventDefault();e.returnValue=''}});
+
+/* ---------- Finish & send ---------- */
+let payload=null;
+function finish(){
+  active=false;$('warn').classList.add('hid');
+  const raw=S.ans.reduce((a,b)=>a+b,0),pen=S.sw>0?1:0,score=Math.max(0,raw-pen);
+  payload={name:S.name,cls:S.cls,variant:S.v,raw:raw,score:score,max:MAX,switches:S.sw,penalty:pen};
+  $('quiz').classList.add('hid');$('end').classList.remove('hid');
+  $('who').textContent=`${S.name}, ${S.cls} сынып, ${S.v}-нұсқа`;
+  $('sc').textContent=`${score} / ${MAX}`;
+  $('pen').textContent=pen?`Дұрыс жауап: ${raw}. Бетті ауыстыру: ${S.sw} рет – 1 балл алынды.`:`Дұрыс жауап: ${raw}. Бетті ауыстыру тіркелмеді.`;
+  send();
+}
+async function send(){
+  $('st').className='sub';$('st').textContent='Нәтиже жіберілуде...';$('retry').classList.add('hid');
+  try{
+    if(SCRIPT_URL.includes('PASTE'))throw new Error('url');
+    await fetch(SCRIPT_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(payload)});
+    $('st').textContent='Нәтиже мұғалімге жіберілді.';
+  }catch(e){
+    $('st').className='sub err';$('st').textContent='Нәтиже жіберілмеді. Интернетті тексеріп, қайта жіберіңіз.';$('retry').classList.remove('hid');
+  }
+}
+$('retry').onclick=send;
+</script>
+</body>
+</html>
